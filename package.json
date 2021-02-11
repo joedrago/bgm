@@ -1,0 +1,21 @@
+{
+  "name": "bgm",
+  "version": "0.0.1",
+  "description": "Bad Guy Minesweeper",
+  "scripts": {
+    "build": "cake build",
+    "watch": "cake watch",
+    "serve": "cake serve"
+  },
+  "author": "Joe Drago",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "coffeeify": "^3.0.1",
+    "coffeescript": "^2.5.1",
+    "fontfaceobserver": "^2.1.0",
+    "node-static": "^0.7.11",
+    "node-watch": "^0.7.1",
+    "uglifyify": "^5.0.2"
+  }
+}
