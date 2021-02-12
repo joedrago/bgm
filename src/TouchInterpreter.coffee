@@ -84,18 +84,7 @@ class TouchInterpreter
         deltaDistance = currDistance - prevDistance
         if deltaDistance != 0
           newZoom = @camera.zoom * (1 + (deltaDistance * 4 / @camera.width))
-          if newZoom < 0.1
-            newZoom = 0.1
-          if newZoom > 5
-            newZoom = 5
-          @camera.zoom = newZoom
-
-          halfW = (@camera.width / 2)
-          halfH = (@camera.height / 2)
-          offsetX = (@pinchAnchor.x - halfW) / newZoom
-          offsetY = (@pinchAnchor.y - halfH) / newZoom
-          @camera.scrollX = @pinchAnchorWorld.x - halfW - offsetX
-          @camera.scrollY = @pinchAnchorWorld.y - halfH - offsetY
+          @adjustZoom(newZoom)
       return
 
     @scene.input.on 'pointerup', (pointer) =>
@@ -122,19 +111,43 @@ class TouchInterpreter
       @scene.setMagnifyingGlass(0, 0, 0)
       return
 
+    @scene.input.on 'wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) =>
+      @calcPinchAnchor(pointer.position.x, pointer.position.y)
+      newZoom = @camera.zoom * (1 - (deltaY / 480))
+      @adjustZoom(newZoom)
+      @scene.setMagnifyingGlass(0, 0, 0)
+      return
+
+  adjustZoom: (newZoom) ->
+    if newZoom < 0.1
+      newZoom = 0.1
+    if newZoom > 5
+      newZoom = 5
+    @camera.zoom = newZoom
+
+    halfW = (@camera.width / 2)
+    halfH = (@camera.height / 2)
+    offsetX = (@pinchAnchor.x - halfW) / newZoom
+    offsetY = (@pinchAnchor.y - halfH) / newZoom
+    @camera.scrollX = @pinchAnchorWorld.x - halfW - offsetX
+    @camera.scrollY = @pinchAnchorWorld.y - halfH - offsetY
+    return
+
   setDragPoint: ->
     @dragX = @tracked[0].pos.x
     @dragY = @tracked[0].pos.y
 
-  calcPinchAnchor: ->
-    if @tracked.length >= 2
+  calcPinchAnchor: (pinchX = null, pinchY = null) ->
+    if (pinchX == null) and (pinchY == null)
+      if @tracked.length < 2
+        return
       pinchX = Math.floor((@tracked[0].pos.x + @tracked[1].pos.x) / 2)
       pinchY = Math.floor((@tracked[0].pos.y + @tracked[1].pos.y) / 2)
-      @pinchAnchor = {x: pinchX, y: pinchY }
-      @pinchAnchorWorld = @camera.getWorldPoint(pinchX, pinchY) # { x: pinchX, y: pinchY }
-      # console.log "pinchAnchor #{@pinchAnchor.x} #{@pinchAnchor.y}"
 
-      @scene.setMagnifyingGlass(@pinchAnchor.x, @pinchAnchor.y, 1)
+    @pinchAnchor = {x: pinchX, y: pinchY }
+    @pinchAnchorWorld = @camera.getWorldPoint(pinchX, pinchY)
+
+    @scene.setMagnifyingGlass(@pinchAnchor.x, @pinchAnchor.y, 1)
 
   calcDistance: (x1, y1, x2, y2) ->
     dx = x2 - x1
