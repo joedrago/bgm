@@ -210,7 +210,7 @@ class MineSweeper
         break
     return
 
-  newGame: (@width = 30, @height = 30, @mineCount = 0, @seed = String(Math.floor(Math.random() * 1000000))) ->
+  newGame: (@width = 16, @height = 16, @mineCount = 0, @seed = String(Math.floor(Math.random() * 1000000))) ->
     Math.seedbgmrandom(@seed)
 
     @lives = 3
