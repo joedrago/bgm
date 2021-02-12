@@ -28,7 +28,7 @@ class BGMHudScene extends Phaser.Scene
       @toggleMode()
     @toggleMode()
 
-    # @debugText = @add.text(0, 0, 'Tap somewhere!')
+    @debugText = @add.text(0, 0, '')
     @glass = @add.image(50, 50, 'glass')
     @glass.setOrigin(0.6, 0.3) # roughly the middle of the magnifying glass
     @glass.alpha = 0

@@ -14,8 +14,15 @@ class TouchInterpreter
   create: (@scene, @camera, @x, @y, @w, @h) ->
     @camera.zoom = 1
     @scene.input.addPointer(1)
+    @scene.input.mouse.disableContextMenu()
 
     @scene.input.on 'pointerdown', (pointer) =>
+      console.log "pointerdown"
+      if pointer.rightButtonDown()
+        worldPos = @camera.getWorldPoint(pointer.position.x, pointer.position.y)
+        @scene.rmb(worldPos.x, worldPos.y)
+        return
+
       if pointer.position.x > (@x + @w)
         return
 
