@@ -50,19 +50,22 @@ class BGMGameScene extends Phaser.Scene
     split = Math.floor(@cameras.main.width * 0.9)
     @cameras.main.setViewport(0, 0, split, @cameras.main.height)
 
-    @ms.addEventListener (ev, args) =>
-      switch ev
-        when 'new'
-          if (@ms.width != @gridCols) or (@ms.height != @gridRows)
-            @recreateDisplayList()
-        when 'cell'
-          @grid[args[0]][args[1]].setTexture(args[2])
-        when 'life'
-          @scene.get('hud').debugText.text = "Are you suuuuuuure? (#{args[0]})"
+    @ms.addEventListener(@msEvent.bind(this))
     @recreateDisplayList()
     @ms.updateAll()
 
     @touch.create(this, @cameras.main, 0, 0, split, @cameras.main.height)
+
+  msEvent: (ev, args) ->
+    switch ev
+      when 'new'
+        if (@ms.width != @gridCols) or (@ms.height != @gridRows)
+          @recreateDisplayList()
+      when 'cell'
+        @grid[args[0]][args[1]].setTexture(args[2])
+      when 'life'
+        @scene.get('hud').debugText.text = "Are you suuuuuuure? (#{args[0]})"
+        @cameras.main.shake(300, 0.001)
 
   update: ->
 
@@ -100,6 +103,7 @@ class BGMGameScene extends Phaser.Scene
 
   rmb: (worldX, worldY) ->
     @scene.get('hud').toggleMode()
+    @ms.save()
 
   tap: (worldX, worldY) ->
     @scene.get('hud').debugText.text = ""
@@ -116,5 +120,7 @@ class BGMGameScene extends Phaser.Scene
       else
         @ms.poke(x, y)
       @ms.updateAll()
+
+    @ms.save()
 
 module.exports = BGMGameScene

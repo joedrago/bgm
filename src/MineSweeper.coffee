@@ -1,7 +1,45 @@
+propsToSave = [
+  'seed'
+  'width'
+  'height'
+  'bomb'
+  'visible'
+  'lives'
+  'mineCount'
+  'gameover'
+]
+
 class MineSweeper
   constructor: ->
     @listeners = []
-    @newGame()
+    if not @load()
+      @newGame()
+
+  load: ->
+    rawData = localStorage.getItem("save")
+    if not rawData?
+      return false
+    try
+      data = JSON.parse(rawData)
+    catch
+      data = null
+
+    if not data?
+      return false
+
+    for p in propsToSave
+      if not data.hasOwnProperty(p)
+        return false
+
+    for p in propsToSave
+      this[p] = data[p]
+    return true
+
+  save: ->
+    data = {}
+    for p in propsToSave
+      data[p] = this[p]
+    localStorage.setItem("save", JSON.stringify(data))
 
   addEventListener: (evl) ->
     @listeners.push(evl)
@@ -208,6 +246,7 @@ class MineSweeper
     for evl in @listeners
       evl('new', [])
     @updateAll()
+    @save()
     return
 
 module.exports = new MineSweeper # Singleton

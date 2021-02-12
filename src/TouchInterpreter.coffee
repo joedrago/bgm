@@ -17,7 +17,6 @@ class TouchInterpreter
     @scene.input.mouse.disableContextMenu()
 
     @scene.input.on 'pointerdown', (pointer) =>
-      console.log "pointerdown"
       if pointer.rightButtonDown()
         worldPos = @camera.getWorldPoint(pointer.position.x, pointer.position.y)
         @scene.rmb(worldPos.x, worldPos.y)
