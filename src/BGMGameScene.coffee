@@ -57,6 +57,8 @@ class BGMGameScene extends Phaser.Scene
     @touch.create(this, @cameras.main, 0, 0, split, @cameras.main.height)
 
   msEvent: (ev, args) ->
+    if ev != 'cell'
+      console.log "msEvent: #{ev}: #{JSON.stringify(args)}"
     switch ev
       when 'new'
         if (@ms.width != @gridCols) or (@ms.height != @gridRows)

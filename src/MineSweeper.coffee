@@ -130,22 +130,25 @@ class MineSweeper
     keepGoing = true
     while keepGoing
       keepGoing = false
-      j = 0
-      while j < @height
-        i = 0
-        while i < @width
+      for j in [0...@height]
+        for i in [0...@width]
           if (@bomb[i + j * @width] == 0) and @hasVisibleZeroNeighbor(i, j)
             if @poke(i, j)
               keepGoing = true
-          ++i
-        ++j
-    j = 0
-    while j < @height
-      i = 0
-      while i < @width
+
+    won = true
+    if @gameover
+      won = false
+
+    for j in [0...@height]
+      for i in [0...@width]
+        if @visible[i + j * @width] == 0
+          won = false
         @updateCell(i, j, reveal)
-        ++i
-      ++j
+    if won
+      @gameover = true
+      for evl in @listeners
+        evl('win', [])
     return
 
   flag: (i, j) ->
@@ -159,9 +162,10 @@ class MineSweeper
         # Bad flag; lose the game
         if @loseLife()
           @visible[index] = 2
-          @updateAll(true)
           @gameover = true
-          # $('#winlose').html 'BAD FLAG! You lose!'
+          @updateAll(true)
+          for evl in @listeners
+            evl('lose', [])
           return
     return
 
@@ -174,8 +178,9 @@ class MineSweeper
         if @loseLife()
           @visible[index] = 2
           @gameover = true
-          # $('#winlose').html 'BOMB! You lose!'
           @updateAll(true)
+          for evl in @listeners
+            evl('lose', [])
           return false
         else
           return false
