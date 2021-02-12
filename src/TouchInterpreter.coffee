@@ -11,13 +11,14 @@ class TouchInterpreter
     @pinchAnchor = null
     @pinchAnchorWorld = null
 
-  create: (@scene, @camera) ->
-
+  create: (@scene, @camera, @x, @y, @w, @h) ->
     @camera.zoom = 1
-
     @scene.input.addPointer(1)
 
     @scene.input.on 'pointerdown', (pointer) =>
+      if pointer.position.x > (@x + @w)
+        return
+
       if @tracked.length == 0
         @dragging = false
 
@@ -59,9 +60,10 @@ class TouchInterpreter
         if @tracked[i].id == pointer.id
           index = i
           break
-      if index != -1
-        # console.log "updating touch #{id}, tracking #{@tracked.length} touches"
-        @tracked[index].pos = pointer.position.clone()
+      if index == -1
+        return
+
+      @tracked[index].pos = pointer.position.clone()
 
       if @tracked.length == 1
         # single touch, consider dragging
@@ -88,25 +90,27 @@ class TouchInterpreter
       return
 
     @scene.input.on 'pointerup', (pointer) =>
+      index = -1
+      for i in [0...@tracked.length]
+        if @tracked[i].id == pointer.id
+          index = i
+          break
+      if index == -1
+        return
+
       if @tracked.length == 1
         if not @dragging
           worldPos = @camera.getWorldPoint(@tracked[0].pos.x, @tracked[0].pos.y)
           # console.log "TAP #{worldPos.x} #{worldPos.y} #{@camera.scrollX} #{@camera.scrollY} #{@camera.zoom}"
           @scene.tap(worldPos.x, worldPos.y)
 
-      index = -1
-      for i in [0...@tracked.length]
-        if @tracked[i].id == pointer.id
-          index = i
-          break
-      if index != -1
-        @tracked.splice(index, 1)
-        if @tracked.length == 1
-          @setDragPoint()
+      @tracked.splice(index, 1)
+      if @tracked.length == 1
+        @setDragPoint()
 
-        if index < 2
-          # We just forgot one of our pinch touches. Pick a new anchor spot.
-          @calcPinchAnchor()
+      if index < 2
+        # We just forgot one of our pinch touches. Pick a new anchor spot.
+        @calcPinchAnchor()
 
       @scene.setMagnifyingGlass(0, 0, 0)
       return

@@ -8,7 +8,7 @@ init = ->
     type: Phaser.AUTO
     width: document.documentElement.clientWidth
     height: document.documentElement.clientHeight
-    backgroundColor: '#2d2d2d'
+    backgroundColor: '#000000' # '#2d2d2d'
     parent: 'screen'
     input:
       activePointers: 2
