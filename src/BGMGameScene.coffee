@@ -58,8 +58,6 @@ class BGMGameScene extends Phaser.Scene
 
     @touch.create(this, @cameras.main, 0, 0, split, @cameras.main.height)
 
-    @scene.launch('hud')
-
   msEvent: (ev, args) ->
     if ev != 'cell'
       console.log "msEvent: #{ev}: #{JSON.stringify(args)}"
@@ -70,8 +68,18 @@ class BGMGameScene extends Phaser.Scene
       when 'cell'
         @grid[args[0]][args[1]].setTexture(args[2])
       when 'life'
-        @scene.get('hud').debugText.text = "Are you suuuuuuure? (#{args[0]})"
+        debugText = @scene.get('hud').debugText
+        if debugText?
+          debugText.text = "Are you suuuuuuure? (#{args[0]})"
         @cameras.main.shake(300, 0.001)
+      when 'mines'
+        mines = @scene.get('hud').mines
+        if mines?
+          mines.text = "#{args[0]}/#{args[1]}"
+      when 'lives'
+        lives = @scene.get('hud').lives
+        if lives?
+          lives.text = String(args[0])
 
   update: ->
 

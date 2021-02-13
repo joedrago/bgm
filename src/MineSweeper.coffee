@@ -140,15 +140,23 @@ class MineSweeper
     if @gameover
       won = false
 
+    visibleMines = 0
+
     for j in [0...@height]
       for i in [0...@width]
-        if @visible[i + j * @width] == 0
+        index = i + j * @width
+        if @visible[index] == 0
           won = false
+        else if @bomb[index] == 1
+          visibleMines += 1
         @updateCell(i, j, reveal)
     if won
       @gameover = true
       for evl in @listeners
         evl('win', [])
+    for evl in @listeners
+      evl('mines', [visibleMines, @mineCount])
+      evl('lives', [@lives])
     return
 
   flag: (i, j) ->

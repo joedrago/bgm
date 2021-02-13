@@ -8,7 +8,6 @@ class BGMMenuScene extends Phaser.Scene
     @ms = require './MineSweeper'
 
   preload: ->
-    @load.image('menu_thing', 'images/btn_menu.png')
 
   create: ->
     @w = @cameras.main.width
