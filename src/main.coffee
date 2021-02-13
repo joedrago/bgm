@@ -1,5 +1,6 @@
 BGMGameScene = require './BGMGameScene'
 BGMHudScene = require './BGMHudScene'
+BGMMenuScene = require './BGMMenuScene'
 
 init = ->
   console.log "Bad Guy Minesweeper: init()"
@@ -15,11 +16,35 @@ init = ->
     scene: [
       BGMGameScene
       BGMHudScene
+      BGMMenuScene
     ]
 
   game = new Phaser.Game(config)
 
 
 window.addEventListener('load', (e) ->
-    init()
+  fonts = [
+    {
+      name: 'Eagle Lake'
+      url:  'fonts/eaglelake.ttf'
+    }
+  ]
+  promises = []
+  for font in fonts
+    do (font) ->
+      promises.push new Promise (resolve, reject) ->
+        newFont = new FontFace(font.name, "url(#{font.url})")
+        newFont.load().then (loaded) ->
+          if loaded
+            document.fonts.add(loaded)
+            console.log "Loaded Font: #{font.name}"
+            resolve()
+          else
+            reject()
+
+    Promise.all(promises).then((loaded) ->
+      init()
+    ).catch (error) ->
+      console.log "Error: ", error
+
 , false)

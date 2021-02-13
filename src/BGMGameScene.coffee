@@ -2,8 +2,10 @@ TouchInterpreter = require './TouchInterpreter'
 
 class BGMGameScene extends Phaser.Scene
   constructor: ->
-    super()
-    Phaser.Scene.call(this, { key: 'game', active: true });
+    super {
+      key: 'game'
+      active: true
+    }
 
     @ms = require './MineSweeper'
     @touch = new TouchInterpreter
@@ -55,6 +57,8 @@ class BGMGameScene extends Phaser.Scene
     @ms.updateAll()
 
     @touch.create(this, @cameras.main, 0, 0, split, @cameras.main.height)
+
+    @scene.launch('hud')
 
   msEvent: (ev, args) ->
     if ev != 'cell'
