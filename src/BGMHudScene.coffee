@@ -29,10 +29,10 @@ class BGMHudScene extends Phaser.Scene
         fontSize: "#{Math.floor(@h / 16)}px"
         color: '#fff'
 
-    @panelX = Math.floor(@cameras.main.width * 0.9)
-    @panelY = 0
-    @panelW = @cameras.main.width - @panelX
+    @panelW = Math.floor(@cameras.main.height * 0.17)
     @panelH = @cameras.main.height
+    @panelX = @cameras.main.width - @panelW
+    @panelY = 0
 
     @panelBackground = @add.graphics()
     @panelBackground.fillStyle(0x333333, 1)
