@@ -12,6 +12,9 @@ propsToSave = [
 class MineSweeper
   constructor: ->
     @listeners = []
+    @width = 0
+    @height = 0
+    @mineCount = 0
     if not @load()
       @newGame()
 
@@ -223,8 +226,21 @@ class MineSweeper
         break
     return
 
-  newGame: (@width = 16, @height = 16, @mineCount = 0, @seed = String(Math.floor(Math.random() * 1000000))) ->
+  newGame: (width = 0, height = 0, mineCount = 0, @seed = String(Math.floor(Math.random() * 1000000))) ->
     Math.seedbgmrandom(@seed)
+
+    if @width == 0
+      @width = 8
+    if @height == 0
+      @height = 8
+
+    # By default, let newGame() re-play whatever the last setting was
+    if width != 0
+      @width = width
+    if height != 0
+      @height = height
+    if mineCount != 0
+      @mineCount = mineCount
 
     @lives = 3
 

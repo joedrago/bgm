@@ -28,6 +28,10 @@ window.addEventListener('load', (e) ->
       name: 'Eagle Lake'
       url:  'fonts/eaglelake.ttf'
     }
+    {
+      name: 'Colored Crayons'
+      url:  'fonts/crayons.ttf'
+    }
   ]
   promises = []
   for font in fonts

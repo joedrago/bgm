@@ -68,9 +68,6 @@ class BGMGameScene extends Phaser.Scene
       when 'cell'
         @grid[args[0]][args[1]].setTexture(args[2])
       when 'life'
-        debugText = @scene.get('hud').debugText
-        if debugText?
-          debugText.text = "Are you suuuuuuure? (#{args[0]})"
         @cameras.main.shake(300, 0.001)
       when 'mines'
         mines = @scene.get('hud').mines
@@ -108,9 +105,6 @@ class BGMGameScene extends Phaser.Scene
     @centerGrid()
 
   setMode: (@mode) ->
-    # console.log "Game Mode: #{@mode}"
-    if @ms.gameover
-      @ms.newGame()
 
   setMagnifyingGlass: (x, y, alpha) ->
     @scene.get('hud').setMagnifyingGlass(x, y, alpha)
@@ -120,8 +114,6 @@ class BGMGameScene extends Phaser.Scene
     @ms.save()
 
   tap: (worldX, worldY) ->
-    @scene.get('hud').debugText.text = ""
-
     if @ms.gameover
       console.log "game is over, doing nothing"
       return

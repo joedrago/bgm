@@ -28,6 +28,18 @@ class BGMHudScene extends Phaser.Scene
         fontFamily: 'Eagle Lake'
         fontSize: "#{Math.floor(@h / 16)}px"
         color: '#fff'
+      life:
+        fontFamily: 'Colored Crayons'
+        fontSize: "#{Math.floor(@h / 5)}px"
+        color: '#ff3'
+      lose:
+        fontFamily: 'Colored Crayons'
+        fontSize: "#{Math.floor(@h / 5)}px"
+        color: '#f33'
+      win:
+        fontFamily: 'Colored Crayons'
+        fontSize: "#{Math.floor(@h / 5)}px"
+        color: '#3f3'
 
     @panelW = Math.floor(@cameras.main.height * 0.17)
     @panelH = @cameras.main.height
@@ -65,15 +77,78 @@ class BGMHudScene extends Phaser.Scene
     @lives = @add.text(@panelX + (@panelW / 2), @panelY + (@panelH * 0.9), 'lives', @fonts.lives)
     @lives.setOrigin(0.5)
 
-    @debugText = @add.text(0, 0, '')
     @glass = @add.image(50, 50, 'glass')
     @glass.setOrigin(0.6, 0.3) # roughly the middle of the magnifying glass
     @glass.alpha = 0
 
+    @lifeText = @add.text(@w / 2, @h / 2, 'Are you sure?', @fonts.life)
+    @lifeText.setOrigin(0.5)
+    @lifeText.setShadow(8, 8)
+    @lifeText.alpha = 0
+    @lifeTween = @tweens.add {
+      targets: @lifeText
+      alpha:
+        value: 1
+        duration: 400
+      hold: 1000
+      yoyo: true
+      loop: 0
+      paused: true
+    }
+
+    @winText = @add.text(@w / 2, @h / 2, 'You win!', @fonts.win)
+    @winText.setOrigin(0.5)
+    @winText.setShadow(8, 8)
+    @winText.alpha = 0
+    @winTween = @tweens.add {
+      targets: @winText
+      alpha:
+        value: 1
+        duration: 400
+      yoyo: false
+      loop: 0
+      paused: true
+    }
+
+    @loseText = @add.text(@w / 2, @h / 2, 'You lose!', @fonts.lose)
+    @loseText.setOrigin(0.5)
+    @loseText.setShadow(8, 8)
+    @loseText.alpha = 0
+    @loseTween = @tweens.add {
+      targets: @loseText
+      alpha:
+        value: 1
+        duration: 400
+      yoyo: false
+      loop: 0
+      paused: true
+    }
+
+    @ms.addEventListener(@msEvent.bind(this))
     @ms.updateAll()
 
+  msEvent: (ev, args) ->
+    if ev != 'cell'
+      console.log "HUD msEvent: #{ev}: #{JSON.stringify(args)}"
+    switch ev
+      when 'new'
+        @winText.alpha = 0
+        @loseText.alpha = 0
+      when 'life'
+        @lifeTween.resume()
+        @lifeTween.restart()
+      when 'win'
+        @winText.alpha = 0
+        @winTween.resume()
+        @winTween.restart()
+      when 'lose'
+        @loseTween.resume()
+        @loseTween.restart()
+
   toggleMode: ->
-    if @mode == 'bomb'
+    if @ms.gameover
+      @ms.newGame()
+    else if @mode == 'bomb'
       @mode = 'flag'
     else
       @mode = 'bomb'
