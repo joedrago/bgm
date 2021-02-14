@@ -39,7 +39,7 @@ class BGMMenuScene extends Phaser.Scene
     @addButton "Expert", =>
       @newGame(30, 16, 99)
     @addButton "Huge", =>
-      @newGame(50, 30, 0)
+      @newGame(50, 30, 240)
 
     @nextButtonIndex += 1
     @addButton "Resume", =>

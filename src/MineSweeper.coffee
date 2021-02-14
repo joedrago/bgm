@@ -249,6 +249,8 @@ class MineSweeper
       MINE_DENSITY = 0.16
       @mineCount = Math.floor(cellCount * MINE_DENSITY)
 
+    @mineCount = Math.min(@mineCount, cellCount - 1)
+
     @gameover = false
 
     # Create fresh arrays
@@ -258,19 +260,11 @@ class MineSweeper
     # Drop in the mines randomly
     indices = new Array(cellCount)
     indices[0] = 0
-    i = 1
-    while i < cellCount
+    for i in [1...cellCount]
       j = @rand(i)
       indices[i] = indices[j]
       indices[j] = i
-      ++i
-    m = @mineCount
-    if m >= cellCount
-      m = cellCount - 1
-    i = 0
-    while i < m
-      @bomb[indices[i]] = 1
-      ++i
+    @bomb[indices[i]] = 1 for i in [0...@mineCount]
     @firstClickIsFree()
     for evl in @listeners
       evl('new', [])
